@@ -1,6 +1,8 @@
-# QUT-POL 校园网自动连接与认证
+# 青岛理工大学（QUT）校园网自动连接与认证
 
-针对 **青岛理工大学（QUT）校园网 QUT-POL** 的自动联网脚本：
+> 青岛理工大学（Qingdao University of Technology, QUT）校园网 `QUT-POL` 自动联网脚本。
+
+针对 **青岛理工大学校园网 QUT-POL** 的自动联网脚本：
 
 - 检测到 WiFi 断开时，自动重新连接 `QUT-POL`
 - 检测到未认证（被门户拦截）时，自动完成 **Dr.COM 网页认证**

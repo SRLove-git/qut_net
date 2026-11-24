@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# QUT-POL 校园网自动连接与认证脚本
+# 青岛理工大学（QUT）校园网 QUT-POL 自动连接与认证脚本
 #   - 检测到 WiFi 断开时自动连接 QUT-POL
 #   - 检测到未认证时自动完成 Dr.COM 校园网认证
 #
