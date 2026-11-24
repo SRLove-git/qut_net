@@ -13,12 +13,26 @@
 set -u
 
 # ============ 配置 ============
-USERNAME=""      # 校园网账号
-PASSWORD=""     # 校园网密码（末尾的 ? 是密码的一部分）
 SSID="QUT-POL"               # WiFi 名称
 PORTAL_HOST="net.qut.edu.cn" # Dr.COM 认证门户
 CHECK_URL="http://www.baidu.com/"   # 用 HTTP 请求检测是否已认证
 CHECK_INTERVAL=30            # 守护模式检查间隔（秒）
+
+# 账号/密码不硬编码在脚本中，改为从配置文件读取：
+#   优先读取环境变量 QUT_AUTOLOGIN_CONF 指定的文件；
+#   否则 root 读 /etc/qut-autologin.conf，普通用户读 ~/.config/qut-autologin.conf。
+# 配置文件格式（建议 chmod 600）：
+#   USERNAME="校园网账号"
+#   PASSWORD="校园网密码"
+CONFIG_FILE="${QUT_AUTOLOGIN_CONF:-}"
+if [ -z "$CONFIG_FILE" ]; then
+    if [ "$(id -u)" = "0" ]; then
+        CONFIG_FILE="/etc/qut-autologin.conf"
+    else
+        CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/qut-autologin.conf"
+    fi
+fi
+
 # 日志文件：root 运行时写到 /var/log，普通用户写到 home 目录
 if [ "$(id -u)" = "0" ]; then
     LOG_FILE="/var/log/qut-autologin.log"
@@ -34,6 +48,17 @@ log() {
         echo "$msg" >> "$LOG_FILE" 2>/dev/null
     fi
 }
+
+# 读取凭据（不在仓库中硬编码账号/密码）
+if [ -f "$CONFIG_FILE" ]; then
+    # shellcheck disable=SC1090
+    . "$CONFIG_FILE"
+fi
+
+if [ -z "${USERNAME:-}" ] || [ -z "${PASSWORD:-}" ]; then
+    log "错误: 未配置校园网账号/密码，请编辑 $CONFIG_FILE（USERNAME/PASSWORD）"
+    exit 1
+fi
 
 # 获取无线网卡设备名
 get_wifi_dev() {

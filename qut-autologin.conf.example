@@ -1,0 +1,8 @@
+# QUT-POL 校园网认证凭据配置示例
+# 复制为对应位置的配置文件并填入你的账号密码，然后 chmod 600：
+#   root/systemd 运行：/etc/qut-autologin.conf
+#   普通用户运行：   ~/.config/qut-autologin.conf
+#
+# 此文件包含明文密码，请勿提交到 git。
+USERNAME=""
+PASSWORD=""

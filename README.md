@@ -35,17 +35,38 @@ GET http://net.qut.edu.cn/drcom/login
 
 ```
 qut-autologin/
-├── qut-autologin.sh      # 主脚本（账号/密码在文件顶部配置）
-├── qut-autologin.service # systemd 服务模板
-├── install.sh            # 一键安装脚本
+├── qut-autologin.sh            # 主脚本（账号/密码从配置文件读取）
+├── qut-autologin.conf.example  # 凭据配置模板
+├── qut-autologin.service       # systemd 服务模板
+├── install.sh                  # 一键安装脚本
 └── README.md
 ```
+
+## 凭据配置
+
+账号/密码**不硬编码在脚本或仓库中**，而是从配置文件读取：
+
+| 运行方式 | 配置文件路径 |
+|----------|--------------|
+| root / systemd | `/etc/qut-autologin.conf` |
+| 普通用户 | `~/.config/qut-autologin.conf` |
+
+也可用环境变量 `QUT_AUTOLOGIN_CONF` 指定其他路径。
+
+配置文件格式（建议 `chmod 600`）：
+
+```bash
+USERNAME="校园网账号"
+PASSWORD="校园网密码"
+```
+
+> ⚠️ 该配置文件包含明文密码，请勿提交到 git（已在 `.gitignore` 中忽略）。
 
 ## 安装
 
 ```bash
-# 1. 编辑 qut-autologin.sh 顶部，填入账号密码
-vim qut-autologin.sh
+# 1. 编辑凭据配置文件，填入账号密码（首次安装会自动从模板生成）
+sudo vim /etc/qut-autologin.conf
 
 # 2. 一键安装（自动注册 systemd 服务并开机自启）
 sudo bash install.sh
@@ -79,12 +100,12 @@ tail -f /var/log/qut-autologin.log        # 日志文件（root 运行时）
 
 | 变量 | 说明 |
 |------|------|
-| `USERNAME` | 校园网账号 |
-| `PASSWORD` | 校园网密码 |
 | `SSID` | WiFi 名称（默认 `QUT-POL`） |
 | `PORTAL_HOST` | 认证门户（默认 `net.qut.edu.cn`） |
 | `CHECK_URL` | 在线检测地址 |
 | `CHECK_INTERVAL` | 守护模式检查间隔（秒，默认 30） |
+
+账号/密码（`USERNAME` / `PASSWORD`）从配置文件读取，见上文「凭据配置」。
 
 ## 免责声明
 
