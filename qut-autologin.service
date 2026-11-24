@@ -1,0 +1,13 @@
+[Unit]
+Description=QUT-POL 校园网自动连接与认证
+After=network.target NetworkManager.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=__SCRIPT_PATH__
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
